@@ -44,8 +44,9 @@ test = test.map(lambda x, y: (resnet.preprocess_input(x), y))
 
 # Load the ResNet architecture
 res = resnet50.ResNet50(
-    # This skips the classification layer
-    include_top = False,
+    # Need the classification layer to flatten
+    include_top = True,
+    classifier_activation = None,
     # Load trained weights, not just the architecture
     weights = 'imagenet',
     # Gotta use this size if include_top = True
