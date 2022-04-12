@@ -54,3 +54,27 @@ res = resnet50.ResNet50(
 
 # Freeze the ResNet weights so we only train the transfer layer
 res.trainable = False
+
+# Now build the model, first set up inputs:
+inputs = tf.keras.Input(shape = (224, 224, 3))
+
+# The next part sequentially builds the output.  We can't use
+#   The Sequential model because resnet is not a layer in that.
+
+# First, send image through ResNet:
+x = res(x)
+# Then send it to a classification layer
+outputs = layers.Dense(5, activation = 'softmax')(x)
+
+# Set optimizer and loss
+optimizer = optimizers.SGD(learning_rate = .0001)
+loss = losses.CategoricalCrossentropy()
+
+# Now, define the model, using above inputs and outputs
+model = tf.keras.model(inputs, outputs)
+# Compile with optimizer, loss and metrics using above variables
+model.compile(
+    optimizer = optimizer,
+    loss = loss,
+    metrics = ['accuracy'],
+)
