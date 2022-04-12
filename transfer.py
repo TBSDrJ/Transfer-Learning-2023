@@ -44,13 +44,12 @@ test = test.map(lambda x, y: (resnet.preprocess_input(x), y))
 
 # Load the ResNet architecture
 res = resnet50.ResNet50(
-    # This puts on the last dense classification layer
-    include_top = True,
+    # This skips the classification layer
+    include_top = False,
     # Load trained weights, not just the architecture
     weights = 'imagenet',
     # Gotta use this size if include_top = True
     input_shape = (224, 224, 3),
-    classifier_activation = 'softmax',
     )
 
 # Freeze the ResNet weights so we only train the transfer layer
