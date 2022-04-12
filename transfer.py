@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 import tensorflow.keras.applications.resnet as resnet
 import tensorflow.keras.applications.resnet50 as resnet50
 import tensorflow.keras.preprocessing.image as preprocimage
@@ -63,16 +64,16 @@ inputs = tf.keras.Input(shape = (224, 224, 3))
 #   The Sequential model because resnet is not a layer in that.
 
 # First, send image through ResNet:
-x = res(x)
+outputs = res(inputs)
 # Then send it to a classification layer
-outputs = layers.Dense(5, activation = 'softmax')(x)
+outputs = layers.Dense(5, activation = 'softmax')(outputs)
 
 # Set optimizer and loss
 optimizer = optimizers.SGD(learning_rate = .0001)
 loss = losses.CategoricalCrossentropy()
 
 # Now, define the model, using above inputs and outputs
-model = tf.keras.model(inputs, outputs)
+model = tf.keras.Model(inputs, outputs)
 # Compile with optimizer, loss and metrics using above variables
 model.compile(
     optimizer = optimizer,
