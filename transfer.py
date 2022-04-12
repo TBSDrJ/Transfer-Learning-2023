@@ -80,3 +80,12 @@ model.compile(
     loss = loss,
     metrics = ['accuracy'],
 )
+
+model.fit(
+    train,
+    batch_size = 32,
+    epochs = 20,
+    verbose = 2,
+    validation_data = test,
+    validation_batch_size = 32,
+)
