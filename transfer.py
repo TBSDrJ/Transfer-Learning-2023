@@ -1,6 +1,5 @@
-import numpy as np
-import tensorflow as tf
-import tensorflow.keras.applications.resnet as resnet
+# Requires Tensorflow 2.10 or later
+import tensorflow as tf 
 import tensorflow.keras.applications.resnet50 as resnet50
 import tensorflow.keras.preprocessing.image as preprocimage
 import tensorflow.image as image
@@ -11,37 +10,25 @@ import tensorflow.keras.optimizers as optimizers
 import tensorflow.keras.utils as utils
 from tensorflow.data import Dataset
 
-train = utils.image_dataset_from_directory(
-    'people',
-    labels = 'inferred',
-    label_mode = 'categorical',
-    class_names = None,
-    color_mode = 'rgb',
-    batch_size = 32,
-    image_size = (224, 224),
-    shuffle = True,
-    seed = 8008,
-    validation_split = 0.3,
-    subset = 'training',
-)
+BATCH_SIZE = 16
 
-test = utils.image_dataset_from_directory(
-    'people',
+train, validation = utils.image_dataset_from_directory(
+    'defungi',
     labels = 'inferred',
     label_mode = 'categorical',
     class_names = None,
     color_mode = 'rgb',
-    batch_size = 32,
+    batch_size = BATCH_SIZE,
     image_size = (224, 224),
     shuffle = True,
     seed = 8008,
-    validation_split = 0.3,
-    subset = 'validation',
+    validation_split = 0.15,
+    subset = 'both',
 )
 
 # Prepare train and test sets for input into ResNet
-train = train.map(lambda x, y: (resnet.preprocess_input(x), y))
-test = test.map(lambda x, y: (resnet.preprocess_input(x), y))
+train = train.map(lambda x, y: (resnet50.preprocess_input(x), y))
+validation = validation.map(lambda x, y: (resnet50.preprocess_input(x), y))
 
 # Load the ResNet architecture
 res = resnet50.ResNet50(
@@ -69,7 +56,7 @@ outputs = res(inputs)
 outputs = layers.Dense(5, activation = 'softmax')(outputs)
 
 # Set optimizer and loss
-optimizer = optimizers.SGD(learning_rate = .0001)
+optimizer = optimizers.legacy.Adam(learning_rate = .00001)
 loss = losses.CategoricalCrossentropy()
 
 # Now, define the model, using above inputs and outputs
@@ -83,9 +70,9 @@ model.compile(
 
 model.fit(
     train,
-    batch_size = 32,
-    epochs = 20,
-    verbose = 2,
-    validation_data = test,
+    batch_size = BATCH_SIZE,
+    epochs = 250,
+    verbose = 1,
+    validation_data = validation,
     validation_batch_size = 32,
 )
