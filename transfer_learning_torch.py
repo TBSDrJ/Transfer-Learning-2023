@@ -7,6 +7,8 @@ from torchvision.models import resnet50, ResNet50_Weights
 
 # If you have a Mac laptop, this will make it use the GPU power.
 torch.set_default_device(torch.device("mps"))
+# Set random seed so that results are reproducible.
+torch.manual_seed(37)
 
 # Docs say that DEFAULT gives the most accurate version.
 weights = ResNet50_Weights.DEFAULT
@@ -85,7 +87,7 @@ for i in range(1):
         print("Train:", end="\t\t")
         print(f"Batch: {len(batch_losses)}", end="\t")
         print(f"Loss: {round(cur_loss, 4)}", end="\t")
-        print(f"Accuracy: {round(cur_acc, 4)}", end="\r")
+        print(f"Accuracy: {round(cur_acc, 4)}")
     print()
     batch_losses = []
     batch_accuracies = []
@@ -100,7 +102,7 @@ for i in range(1):
             print("Validation:", end="\t")
             print(f"Batch: {len(batch_losses)}", end="\t")
             print(f"Loss: {round(cur_loss, 4)}", end="\t")
-            print(f"Accuracy: {round(cur_acc, 4)}", end="\r")
+            print(f"Accuracy: {round(cur_acc, 4)}")
     print()
     # If you want the learning rate to decay over time
     # lr = 0*0.95
