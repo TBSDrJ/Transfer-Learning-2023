@@ -13,6 +13,9 @@ from tensorflow.data import Dataset
 
 BATCH_SIZE = 32
 
+# Set the random seed so that we get reproducible results
+tf.keras.utils.set_random_seed(37)
+
 train, validation = utils.image_dataset_from_directory(
     'defungi',
     labels = 'inferred',
